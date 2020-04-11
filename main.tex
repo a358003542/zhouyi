@@ -1,0 +1,783 @@
+% !Mode:: "TeX:UTF-8"
+
+\documentclass[12pt,oneside]{book}
+
+\newlength{\textpt}
+\setlength{\textpt}{11pt}
+    
+\newcommand{\flypage}[1]{\begin{titlepage}\begin{center}\vspace*{\stretch{1}}#1\vspace*{\stretch{1}}\end{center}\end{titlepage}}
+    
+%========基本必备的宏包========%
+\RequirePackage{calc,float,moresize}
+%\RequirePackage[onehalfspacing]{setspace}
+\linespread{1.5}
+%1.3 onehalfspacing
+%试卷或需要文字紧凑的
+%1.6 doublespacing
+
+%===========加入目录 某章或某节=====%
+\makeatletter
+
+\newcommand{\addchtoc}[1]{
+        \cleardoublepage
+        \phantomsection
+        \addcontentsline{toc}{chapter}{#1}}
+
+\newcommand{\addsectoc}[1]{
+        \phantomsection
+        \addcontentsline{toc}{section}{#1}}
+
+%===========全文基本格式==========%
+\setlength{\parskip}{1.6ex plus 0.2ex minus 0.2ex}   %段落間距
+\setlength{\parindent}{\textpt * \real{2}}
+
+%=========页面设置=========%
+\RequirePackage[a4paper, %a4paper size 297:210 mm
+  bindingoffset=10mm,%裝訂線
+  top=35mm,  %上邊距 包括頁眉
+  bottom=30mm,%下邊距 包括頁腳
+  inner=10mm,  %左邊距or inner
+  outer=10mm,  %右邊距or  outer
+  headheight=10mm,%頁眉
+  headsep=15mm,%
+  footskip=15mm,%
+  marginparsep=10pt, %旁註與正文間距
+  marginparwidth=6em,includemp=true% 旁註寬度計入width%旁註寬度
+  ]{geometry}
+
+%color
+\RequirePackage[table,svgnames]{xcolor}
+
+%================字體================%
+%设置数学字体
+\RequirePackage{amssymb,amsmath}
+\RequirePackage{stmaryrd}
+\everymath{\displaystyle}
+
+\RequirePackage{fontspec}
+%設置英文字體
+\setmainfont[Mapping=tex-text]{DejaVu Serif}
+\setsansfont[Mapping=tex-text]{DejaVu Sans}
+\setmonofont[Mapping=tex-text]{DejaVu Sans Mono}
+
+
+%中文環境
+\RequirePackage[]{xeCJK}
+\xeCJKsetup{PunctStyle=plain}
+\xeCJKDeclareSubCJKBlock{LIUSHISIGUA}{ "4DC0 -> "4DFF}
+\setCJKmainfont[FallBack=DejaVu Serif, ItalicFont=方正楷体简体,LIUSHISIGUA=DejaVu Sans]{Source Han Serif CN}
+\setCJKsansfont[FallBack=DejaVu Sans]{Source Han Sans CN}
+\setCJKmonofont[FallBack=DejaVu Sans Mono]{方正楷体简体}
+
+
+%%===============中文化=========%
+\renewcommand\contentsname{目~录}
+\renewcommand\listfigurename{插图目录}
+\renewcommand\listtablename{表格目录}
+\renewcommand\bibname{参~考~文~献}
+\renewcommand\indexname{索~引}
+\renewcommand\figurename{图}
+\renewcommand\tablename{表}
+\renewcommand\partname{部分}
+\renewcommand\appendixname{附录}
+\renewcommand{\today}{\number\year{}年\number\month{}月\number\day{}日}
+
+
+%=======页眉页脚格式=========%
+\RequirePackage{fancyhdr}   %頁眉頁腳
+\RequirePackage{zhnumber}  %计数器中文化
+\pagestyle{fancy}
+\renewcommand{\sectionmark}[1]
+{\markright{第\zhnumber{\arabic{section}}节~~#1}{}}
+
+\fancypagestyle{plain}{%
+    \fancyhf{}
+    \renewcommand{\headrulewidth}{0pt}
+    \renewcommand{\footrulewidth}{0pt}
+    \fancyhf[HR]{\ttfamily \footnotesize \rightmark }
+    \fancyhf[FR]{\thepage}}
+\pagestyle{plain}
+
+
+%=========章節標題設計=========%
+\RequirePackage{titlesec}
+%修改part
+\titleformat{\part}{\huge\sffamily}{}{0em}{}
+%修改chapter
+\titleformat{\chapter}{\LARGE\sffamily}{}{0em}{}
+%修改section
+\titleformat{\section}{\Large\sffamily}{}{0em}{}
+%修改subsection
+\titleformat{\subsection}{\large\sffamily}{}{0em}{}
+%修改subsubsection
+\titleformat{\subsubsection}{\normalsize\sffamily}{}{0em}{}
+
+
+%================目录===============%
+%toc label to contents space   dynamic adjust
+\RequirePackage{tocloft}%
+\renewcommand{\numberline}[1]{%
+  \@cftbsnum #1\@cftasnum~\@cftasnumb%
+}
+
+%==============超鏈接===============%
+\RequirePackage[colorlinks=true,linkcolor=blue,citecolor=blue]{hyperref} %設置書簽和目錄鏈接等
+\newcommand{\hlabel}[1]{\phantomsection \label{#1}}%某一小段的引用
+
+
+%=================文字強調=========%
+\RequirePackage{ulem} %下劃線,加點
+\normalem%normal em , not instead of the uline
+
+%modified udot command from the dotuline
+\def\udot{\bgroup
+  \UL@setULdepth
+  \markoverwith{\begingroup
+     \advance\ULdepth0.1ex
+     \lower\ULdepth\hbox{\kern.25em . \kern.045em}%
+     \endgroup}%
+  \ULon}
+\renewcommand\emshape{\color{red}}
+
+%==================插入圖片=======%
+\RequirePackage{wrapfig}
+\RequirePackage{graphicx}
+\graphicspath{{figures/}}
+%change the caption style a little like 1-1
+\renewcommand{\thefigure}{\arabic{chapter}-\arabic{figure}}
+
+
+%==============插入表格========%
+\RequirePackage{booktabs}
+\renewcommand{\thetable}{\arabic{chapter}-\arabic{table}}
+\RequirePackage{caption}
+%\renewcommand{\arraystretch}{1.3}
+%如果用setspace宏包而不是linespread调整行间距，那么才需要额外的表格行距拉大。
+
+%插入代码
+\RequirePackage{fancyvrb} 
+\fvset{frame=lines,tabsize=4 ,baselinestretch=1.8, fontsize=\footnotesize}
+
+
+%==========其他宏包===========%
+\RequirePackage{tikz} 
+\usetikzlibrary{calc}
+
+%========脚注=========%
+\newcommand*\circled[1]{%
+  \tikz[baseline=(char.base)]\node[shape=circle,draw,inner sep=0.4pt,minimum size=4pt] (char) {#1};}
+\newcommand*\circledarabic[1]{\circled{\arabic{#1}}}
+
+\RequirePackage{perpage} %the perpage package
+\MakePerPage{footnote} %the perpage package command
+
+\renewcommand*{\thefootnote}{\protect\circledarabic{footnote}}
+
+
+\renewcommand\@makefntext[1]
+{\vspace{5pt}
+\noindent
+\makebox[20pt][c]{\@makefnmark}
+\fontsize{10pt}{12pt}\selectfont #1}
+
+\setlength{\skip\footins}{20pt plus 10pt}
+%main body 与脚注之间的距离
+
+
+%framed环境
+\RequirePackage{framed}
+
+\newenvironment{shici}{
+\begin{verse}
+\centering\large\hspace{12pt}}
+{\end{verse}}
+
+\RequirePackage{indentfirst} 
+
+
+
+
+
+\makeatother
+
+
+
+
+
+\title{周易}
+\author{万泽}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={制作者邮箱：a358003542@outlook.com},
+  pdfcreator={万泽}}
+  
+\begin{document}
+\frontmatter 
+
+\maketitle
+
+\flypage{感谢上天}
+
+
+\addchtoc{引言}
+\chapter*{引言}
+天人感应是周易预测的基石，只有良好的天人感应，上天以卦数示人，人才可能继续做出正确的预测。没有天人感应学说，后面的一切都是站不住脚的。
+
+我们学到的各个周易预测学派都是前人内心修身，天人感应，外在体察的经验总结。各个学派彼此是不相干的，甚至是彼此跨越几百年完全不搭架的，将这些不同的学派和不同领域的应用企图统一起来的想法是极具野心的，初学者应该慎重。
+
+我发觉试图将五行和八卦混合起来的做法可能是错误的，五行学说更适合的是在中医领域，而观星领域发展起来的紫微斗数，或者和建筑相关的奇门之术。它们在具体领域对于从卦象到更具体的物象都有各种各样的约定，所有的这些约定都是源于前人先贤们内在修身，天人感应，体察外在万物，然后解读卦象的结果。所有这些学派的发展都是遵循如下过程：\textbf{内在修身静心，诚心发问，起卦得卦象或者观察万物得卦象，用心体察解读卦象}。
+
+这个过程是最核心本质的部分，而至于具体得出来的结论和前人总结的各个约定反倒只是一些术了。这些术你甚至可以看到有点类似于科学的统计，但离周易的本质已经很远了。
+
+所以就以最简单的周易六十四卦预测来说，个人的修身静心和用心体察解读卦象，这个过程是缺一不可的。没有这个过程，而是试图从周易预测的各个术中寻找科学或者某种规律的东西，那就实在是南辕北辙了。
+
+中国人的这种直觉思维模式是很有别于西方的那种逻辑思维模式的，目前来看西方的逻辑思维对于目前我们的科学贡献更大，但是也许那也只是对于宇宙存在的某一方面而言确实西方的逻辑体系说准了宇宙存在的某些东西，能够更好地对外部存在进行建模和判断。但谁也无法保证中国人的这种整体的直觉思维模式不会在下个阶段，对于宇宙存在做出更好的解释。
+
+\section{阴阳学说}
+\begin{quote}
+有太极，是生两仪， 两仪生四象， 四象生八卦，八卦定吉凶，吉凶生大业。
+\end{quote}
+
+
+阴阳学说是如此的浅显，以至于我觉得无法再补充说些什么了，就好像就是那样，它就在哪里，存在于我们的基因中，存在于我们的记忆中，觉得不需要再多说点什么了。但实际上阴阳学说是很深的哲理，西方哲学家们从莱布尼兹到黑格尔到马克思，慢慢把辩证法发展起来付出了极大的努力，而这个努力的基石，莱布尼兹自己也承认过，是受到了中国阴阳学说的启发。
+
+任何事物内部都存在着矛盾对立面，这个矛盾对立面就是阴和阳。然后阴阳衍生出四象。四象很是巧妙地把事物内部矛盾演化的过程进一步细化，于是可比春夏秋冬，可比市场经济繁荣危机的GDP波动图等。实际上任何事物发展演化都可以进一步细化分析，从而得到四象。
+
+\section{八卦和物象}
+\begin{quote}
+乾(qián)、坤(kūn)、坎(kǎn)、离(lí)、兑(duì)、艮(gèn)、巽(xùn)、震(zhèn)
+\end{quote}
+
+
+假如我们问上天的问题是“是或者不是”这样简单的问题，那么是就是阳，而不是就是阴，一个爻的卦象就够用了。但某些问题必然要求具有更大的信息量，于是人们提出八卦，并将八卦和这个世界不同的万事万物的物象对应起来。读者可以随便搜一搜就可以搜到八卦和物象的映射关系，实际上我们如果问上天的问题最后答案是指明某个物的话，那么分析卦象里面的八卦对应的物象，就能够大致猜测出来上天启示你的那个物品是什么。
+
+我对八卦和这些物象的映射关系持保留意见，可做参考吧。类似的还有后天八卦映射方位的理论，可以在你想特别预测某个方位的时候权做参考吧。
+
+\section{如何摇卦}
+蓍草占卦就不说了，要铜钱六十四卦方法因为以前有兴趣学了一下，下面说明一下。
+
+我看到有人批判说电脑计算随机数摇卦是不准的，一定要用铜钱。我觉得说这话的人一定要用蓍草占卜，否则对不起他的纯真坚持的心。重要的是天人感应，是铜钱也好，电脑生成的随机数也好，都不过是过程是手段是术罢了，只要保证这个过程不是掩耳盗铃，就是可行的。
+
+具体是一个爻要抛三次硬币或者生成三个0或1的随机数：
+
+\begin{itemize}
+\item 如果加和为3，也就是都是阳，则为老阳爻，本卦得阳爻，变卦得阴爻
+\item 如果加和为2，也就是两阳一阴，则为少阳爻，本卦得阳爻，变卦得阳爻
+\item 如果加和为1，也就是一阳两阴，则为少阴爻，本卦得阴爻，变卦得阴爻
+\item 如果加和为0，也就是都是阴，则为老阴爻，本卦为阴爻，变卦为阳爻
+\end{itemize}
+
+
+如此重复得到周易六十四卦预测的本卦和变卦。
+
+\section{六十四卦解卦入门}
+
+在得到本卦和变卦之后，我们就可以查阅周易一书里面的内容了。从我个人的经验来看，变爻的一般为一个到两个，这些情况基本上是没有争议的：
+
+\begin{itemize}
+\item 无变爻 以本卦卦辞断之
+\item 一个变爻 以该爻的爻辞断之
+\item 两个变爻 以两个爻的爻辞共同断之，这里朱熹说 \verb+以上者断之+ ，我觉得说得不够确切，因为周易的各个爻辞明显可以看出是在讲述一个事件的发展经过的过程，所以更确切来说是这两个爻是你预测的该事件在那两个发展阶段存在变数的情况，\verb+以上为主+ 含义是以事情最终那个变化情况为主，但我觉得最好说成是由这两个爻的爻辞共同断之。
+\item 更多的变爻的时候我会觉得这次摇卦不是很准了，那个时候我还没有接触朱熹的变爻断法，我觉得可以作为参考\footnote{但也只是参考，除开预测者的非常规预测需求，以一般的事件预测来说，我觉得还是要以本卦为主，只是事情会在很短时间内发生很多变化，所以该卦的时效性可能会很短} 。
+
+具体朱熹关于多个变爻的断法如下所示：
+\begin{quotation}
+三个变爻以本卦与变卦卦辞断；本卦为贞（体），变卦为悔（用）
+
+四个变爻以变卦之两不变爻爻辞断，但以下者为主
+
+五个变爻以变卦之不变爻爻辞断
+
+六个变爻以变卦之卦辞断，乾坤两卦则以「用」辞断
+\end{quotation}
+
+\end{itemize}
+
+\section{关于本书基本术语}
+经是周易最开始的内容，
+
+具体解卦最先的是卦象，根据你提出的问题分析卦象。卦象也就是那两个八卦叠起来的象。相传卦辞是文王写的，爻辞是周公写的。然后下面还有彖(tuàn)辞、象辞是孔子和他的门人写的。
+
+
+\addchtoc{目录}
+\setcounter{tocdepth}{2}    
+\tableofcontents
+
+
+
+\mainmatter
+\part{周易}
+
+\chapter{乾卦}
+\section{原文}
+乾  ䷀
+
+
+\subsection{经}
+乾：元亨，利贞。
+
+初九：潜龙，勿用。
+
+九二：见龙在田，利见大人。
+
+九三：君子终日乾乾，夕惕若，厉，无咎。
+
+九四：或跃在渊，无咎。
+
+九五：飞龙在天，利见大人。
+
+上九：亢龙有悔。
+
+用九：见群龙无首，吉。
+
+
+\subsection{彖}
+大哉乾元，万物资始，乃统天。云行雨施，品物流形。大明始终，六位时成，时乘六龙以御天。乾道变化，各正性命，保合大和，乃利贞。首出庶物，万国咸宁。
+
+\subsection{象}
+天行健，君子以自强不息。潜龙勿用，阳在下也。见龙再田，德施普也。终日乾乾，反复道也。或跃在渊，进无咎也。飞龙在天，大人造也。亢龙有悔，盈不可久也。用九，天德不可为首也。
+
+\chapter{坤卦}
+坤 ䷁
+
+\section{原文}
+\subsection{经}
+坤：元亨，利牝马之贞。君子有攸往，先迷后得主，利西南得朋，东北丧朋。安贞，吉。
+
+\subsection{彖}
+至哉坤元，万物资生，乃顺承天。坤厚载物，德合无疆。含弘光大，品物咸亨。牝马地类，行地无疆，柔顺利贞。君子攸行，先迷失道，后顺得常。西南得朋，乃与类行；东北丧朋，乃终有庆。安贞之吉，应地无疆。
+
+\subsection{象}
+地势坤，君子以厚德载物。
+
+
+\chapter{水雷屯卦}
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+
+\chapter{坤卦}
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+
+\chapter{坤卦}
+坤 ䷁
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+
+\chapter{坤卦}
+坤 ䷁
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+
+\chapter{坤卦}
+坤 ䷁
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+
+\chapter{坤卦}
+坤 ䷁
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+
+\chapter{坤卦}
+坤 ䷁
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+\chapter{坤卦}
+坤 ䷁
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+\chapter{坤卦}
+坤 ䷁
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+\chapter{坤卦}
+坤 ䷁
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+\chapter{坤卦}
+坤 ䷁
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+\chapter{坤卦}
+坤 ䷁
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+\chapter{坤卦}
+坤 ䷁
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+\chapter{坤卦}
+坤 ䷁
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+\chapter{坤卦}
+坤 ䷁
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+\chapter{坤卦}
+坤 ䷁
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+\chapter{坤卦}
+坤 ䷁
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+\chapter{坤卦}
+坤 ䷁
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+\chapter{坤卦}
+坤 ䷁
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+\chapter{坤卦}
+坤 ䷁
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+\chapter{坤卦}
+坤 ䷁
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+\chapter{坤卦}
+坤 ䷁
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+\chapter{坤卦}
+坤 ䷁
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+\chapter{坤卦}
+坤 ䷁
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+\chapter{坤卦}
+坤 ䷁
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+\chapter{坤卦}
+坤 ䷁
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+\chapter{坤卦}
+坤 ䷁
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+\chapter{坤卦}
+坤 ䷁
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+\chapter{坤卦}
+坤 ䷁
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+\chapter{坤卦}
+坤 ䷁
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+\chapter{坤卦}
+坤 ䷁
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+\chapter{坤卦}
+坤 ䷁
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+\chapter{坤卦}
+坤 ䷁
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+\chapter{坤卦}
+坤 ䷁
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+\chapter{坤卦}
+坤 ䷁
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+\chapter{坤卦}
+坤 ䷁
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+\chapter{坤卦}
+坤 ䷁
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+
+\chapter{小过卦}
+小过 ䷽
+
+\section{原文}
+
+\subsection{经}
+小过：亨，利贞，可小事，不可大事。飞鸟遗之音，不宜上，宜下，大吉。
+
+初六：飞鸟以凶。
+六二：过其祖，遇其妣；不及其君，遇其臣；无咎。
+九三：弗过防之，从或戕之，凶。
+九四：无咎，弗过遇之。 往厉必戒，勿用永贞。
+六五：密云不雨，自我西郊，公弋取彼在穴。
+上六：弗遇过之，飞鸟离之，凶，是谓灾眚。
+\subsection{彖}
+小过，小者过而亨也。过以利贞，与时行也。柔得中，是以小事吉也。刚失位而不中，是以不可大事也。有飞鸟之象焉，有飞鸟遗之音，不宜上宜下，大吉；上逆而下顺也。
+
+\subsection{象}
+山上有雷，小过；君子以行过乎恭，丧过乎哀，用过乎俭。
+
+
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+
+\section{原文}
+\subsection{经}
+\subsection{彖}
+\subsection{象}
+
+
+
+
+
+\part{周易相关}
+
+
+
+
+\part{附录}
+\chapter{参考资料}
+
+《易经入门学习教程》 —— 小雅 www.quanxue.cn
+
+
+
+
+
+
+
+% 编者:万泽
+\end{document}
+
+
