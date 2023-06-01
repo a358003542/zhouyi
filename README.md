@@ -6,11 +6,11 @@
 
 
 
-- 在线阅读
+- [在线阅读](https://tushujingxuan.github.io/articles/zhou-yi-chu-jiang.html)
 
-- epub下载
+- [epub下载](https://github.com/a358003542/zhouyi/releases/download/0.1/main.epub)
 
-- pdf下载
+- [pdf下载](https://github.com/a358003542/zhouyi/releases/download/0.1/main.pdf)
 
 ## 制作epub
 
